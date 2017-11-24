@@ -2,12 +2,35 @@
 
 
 def image_load(path):
+    """ this return PIL Image from path.
+
+
+    cv2 version is following
+    Args:
+        path:
+
+    Returns:
+        image
+    """
     from PIL import Image
     image = Image.open(path)
+
+    #
+    # import cv2
+    # image = cv2.imread(path)
     return image
 
 
 def fashion_detect(image):
+    """ this detects clothes area and label. Maybe it' return only pants
+
+    Args:
+        image:
+
+    Returns:
+        box:
+        label:
+    """
     # # Imports
     import numpy as np
     import os
@@ -79,7 +102,7 @@ def fashion_detect(image):
                 [detection_boxes, detection_scores, detection_classes, num_detections],
                 feed_dict={image_tensor: image_np_expanded})
             # Visualization of the results of a detection.
-            left, right, top, bottom = vis_util.visualize_boxes_and_labels_on_image_array(
+            left, right, top, bottom, label = vis_util.visualize_boxes_and_labels_on_image_array(
                 image_np,
                 np.squeeze(boxes),
                 np.squeeze(classes).astype(np.int32),
@@ -88,24 +111,37 @@ def fashion_detect(image):
                 use_normalized_coordinates=True,
                 line_thickness=8)
             box = {'left': int(left), 'right': int(right), 'top': int(top), 'bottom': int(bottom)}
-            label = category_index[1]['name']
             return box, label
 
 
-def image_crop(image, box):
+def image_crop(image, box, name):
+    """ cropping from image with box.
+    Args:
+        image:
+        box:
+
+    Returns:
+
+    """
     croped_image = image.crop((box['left'], box['top'], box['right'], box['bottom']))
-    print(image.format, image.size, image.mode)
-    croped_image.save("croped3.jpg")
+    croped_image.save(name)
     return True
 
 
-def fashion_detector(image):
+def fashion_detector(image, name):
+    """ facets method. crop image and save it with it's name.
+
+    Args:
+        image:PIL image
+
+    Returns:
+        label
+    """
     box, label = fashion_detect(image)
-    image_crop(image, box)
+    image_crop(image, box, name)
+    return str(label[0])
 
 
 if __name__ == '__main__':
     image = image_load('test_images/image4.jpg')
-    print(fashion_detect(image))
-    box, label = fashion_detect(image)
-    print(image_crop(image, box))
+    print(fashion_detector(image=image,name="croped5.jpg"))
