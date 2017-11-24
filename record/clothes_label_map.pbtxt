@@ -1,0 +1,12 @@
+item {
+    id: 1,
+    name: 'shirt'
+}
+
+item {
+    id: 2,
+    name: 'pants'
+}
+
+example = tf.python_io.tf_record_iterator("./record/clothes_train.record")
+tf.train.Example.FromString(example)
