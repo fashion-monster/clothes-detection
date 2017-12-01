@@ -116,6 +116,7 @@ def fashion_detect(image):
 
 def image_crop(image, box, name):
     """ cropping from image with box.
+
     Args:
         image:
         box:
@@ -128,20 +129,20 @@ def image_crop(image, box, name):
     return True
 
 
-def fashion_detector(image, name):
+def fashion_detector(pil_image, output_name):
     """ facets method. crop image and save it with it's name.
 
     Args:
-        image:PIL image
+        pil_image:PIL image
 
     Returns:
         label
     """
-    box, label = fashion_detect(image)
-    image_crop(image, box, name)
+    box, label = fashion_detect(pil_image)
+    image_crop(pil_image, box, output_name)
     return str(label[0])
 
 
 if __name__ == '__main__':
     image = image_load('test_images/image4.jpg')
-    print(fashion_detector(image=image,name="croped5.jpg"))
+    print(fashion_detector(pil_image=image, output_name="croped5.jpg"))
