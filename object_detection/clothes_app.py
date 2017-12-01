@@ -6,12 +6,13 @@ app = Flask(__name__)
 
 @app.route("/cloth_detect", methods=['POST'])
 def cloth_detection_facet():
-    """
+    """clothe area detect method.
 
     Returns:
 
     """
     path = request.args.get("image_path")
+    print(path)
     image = image_load(path=path)
     file_name = path.split('/')
     cropped_dir_name = '/home/hashimoto/LineBot/cropped/'
@@ -19,4 +20,4 @@ def cloth_detection_facet():
 
 
 if __name__ == '__main__':
-    app.run(port=9998)
+    app.run(port=9998, debug=True)
