@@ -20,7 +20,7 @@ def cloth_detection_facet():
     output_name = cropped_dir_name + file_name[-1]
 
     rslt = fashion_detector(pil_image=image, output_name=output_name)
-    if rslt:
+    if rslt is not None:
         header = {'content-type': 'application/json'}
         print(requests.post(url='http://127.0.0.1:9999/resize',
                             headers=header,

@@ -102,16 +102,19 @@ def fashion_detect(image):
                 [detection_boxes, detection_scores, detection_classes, num_detections],
                 feed_dict={image_tensor: image_np_expanded})
             # Visualization of the results of a detection.
-            left, right, top, bottom, label = vis_util.visualize_boxes_and_labels_on_image_array(
-                image_np,
-                np.squeeze(boxes),
-                np.squeeze(classes).astype(np.int32),
-                np.squeeze(scores),
-                category_index,
-                use_normalized_coordinates=True,
-                line_thickness=8)
-            box = {'left': int(left), 'right': int(right), 'top': int(top), 'bottom': int(bottom)}
-            return box, label
+            try:
+                left, right, top, bottom, label = vis_util.visualize_boxes_and_labels_on_image_array(
+                    image_np,
+                    np.squeeze(boxes),
+                    np.squeeze(classes).astype(np.int32),
+                    np.squeeze(scores),
+                    category_index,
+                    use_normalized_coordinates=True,
+                    line_thickness=8)
+                box = {'left': int(left), 'right': int(right), 'top': int(top), 'bottom': int(bottom)}
+                return box, label
+            except TypeError:
+                return None, None
 
 
 def image_crop(image, box, name):
@@ -139,10 +142,29 @@ def fashion_detector(pil_image, output_name):
         label
     """
     box, label = fashion_detect(pil_image)
-    image_crop(pil_image, box, output_name)
-    return str(label[0])
+    if (box is not None) and (label is not None):
+        image_crop(pil_image, box, output_name)
+        return str(label[0])
+    else:
+        return None
 
 
 if __name__ == '__main__':
-    image = image_load('test_images/image4.jpg')
-    print(fashion_detector(pil_image=image, output_name="croped5.jpg"))
+    import os
+    months = ["20167", "20168"]
+    images_20167 = [x for x in os.listdir(months[0]) if x != '.DS_Store']
+    images_20168 = [x for x in os.listdir(months[1]) if x != '.DS_Store']
+
+    images = [images_20167, images_20168]
+
+    n = len(images)
+    for i in xrange(n):
+        i_set = images[i]
+        for image_name in i_set:
+            output_name = str(i+1) + "/" + image_name
+            image = image_load(months[i] + "/" + image_name)
+            rst = fashion_detector(pil_image=image, output_name=output_name)
+            if rst is not None:
+                print(rst, output_name)
+
+
